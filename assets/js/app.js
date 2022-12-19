@@ -61,14 +61,38 @@ const app = {
     // Attention: par défaut l'instance d'un formData n'affiche pas les propriété qu'elle contient dans une console.log (car elles sont privées)
     // console.log(formDataInstance);
 
-    // pour accéder aux valeurs des champs, on doit utiliser un getter auquel on passe le nom du champ dont on veut récupérer la valeur
-    console.log('Valeur du champ "list-name":', formDataInstance.get('list-name'));
+    // On récupère la valeur du champ list-name dans une variable
+    const listNameValue = formDataInstance.get(('list-name'));
 
-    console.log('ici je prends en charge le submit du formulaire de création de liste');
+    // On déclenche la création / insertion de la liste dans le DOM à partir du nom récupéré depuis le form
+    app.makeListInDOM(listNameValue);
+
+    // On peut également choisir de "nettoyer" le champ du form avant de fermer la modale
+    // On utilise ici un sélecteur CSS qui permet de cibler l'input qui possède un attribut name égal à "list-name"
+    const listNameInputElmt = formElmt.querySelector('input[name="list-name"]');
+    listNameInputElmt.value = '';
+
+    // On oublie pas de fermer toutes les modales quand la liste est créée
+    app.hideModals();
   },
 
-  makeListInDOM() {
-    console.log('ici on crée une liste dans le DOM')
+  // Pour créer une liste dans le DOM on aura forcément besoin de son titre
+  makeListInDOM(listName) {
+    // On récupère notre template de liste
+    const listTemplateElmt = document.getElementById('list-template');
+    
+    // On crée un exemplaire de liste en clonant le contenu du template avec la méthode importNode
+    const newListElmt = document.importNode(listTemplateElmt.content, true);
+
+    // On modifie le titre pour le remplacer par le vrai nom de la liste qu'on est en train de créer
+    const listTitleElmt = newListElmt.querySelector('h2');
+    listTitleElmt.textContent = listName;
+
+    // On l'insère dans le DOM dans le container qui contient les listes de taches
+    const listContainer = document.querySelector('#lists-container');
+    listContainer.appendChild(newListElmt);
+    // On pouvait aussi choisir d'insérer la liste en premier enfant du container (pour l'avoir au début)
+    // listContainer.prepend(newListElmt);
   }
 };
 
