@@ -25,6 +25,11 @@ const app = {
 
     // On pourrait aussi faire la meme chose avec un foreach directement
     // modalCloseButtonElmtList.forEach((closeButtonElmt) => closeButtonElmt.addEventListener('click', app.hideModals));
+    
+    // On ajoute l'écouteur sur le form de la modale pour intercepter le submit
+    const addListFormElmt = document.querySelector('#addListModal form');
+
+    addListFormElmt.addEventListener('submit', app.handleAddListForm);
   },
 
   showAddListModal() {
@@ -42,6 +47,28 @@ const app = {
     for(const modalElmt of allModalsElmtList) {
       modalElmt.classList.remove('is-active');
     }
+  },
+
+  handleAddListForm(event) {
+    event.preventDefault();
+
+    // On récupère le formulaire dans une variable à partir de l'event
+    const formElmt = event.target;
+
+    // On génère une instance de formData
+    const formDataInstance = new FormData(formElmt);
+
+    // Attention: par défaut l'instance d'un formData n'affiche pas les propriété qu'elle contient dans une console.log (car elles sont privées)
+    // console.log(formDataInstance);
+
+    // pour accéder aux valeurs des champs, on doit utiliser un getter auquel on passe le nom du champ dont on veut récupérer la valeur
+    console.log('Valeur du champ "list-name":', formDataInstance.get('list-name'));
+
+    console.log('ici je prends en charge le submit du formulaire de création de liste');
+  },
+
+  makeListInDOM() {
+    console.log('ici on crée une liste dans le DOM')
   }
 };
 
