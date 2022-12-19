@@ -151,6 +151,15 @@ const app = {
     const listTitleElmt = newListElmt.querySelector('h2');
     listTitleElmt.textContent = listName;
 
+    // On va également générer un ID unique à partir de la date à laquelle on crée l'élément
+    const newId = `list-${Date.now()}`;
+    newListElmt.querySelector('[data-list-id]').dataset.listId = newId;
+
+    // On en profite également au passage pour ajouter l'écouteur d'événement qui affiche la modale de création de carte
+    // sur le bouton
+    const addCardButtonElmt = newListElmt.querySelector('.add-card--button');
+    addCardButtonElmt.addEventListener('click', app.showAddCardModal);
+
     // On l'insère dans le DOM dans le container qui contient les listes de taches
     const listContainer = document.querySelector('#lists-container');
     listContainer.appendChild(newListElmt);
