@@ -1,10 +1,13 @@
 
 // on objet qui contient des fonctions
 const app = {
+  base_url: 'http://localhost:5000',
   
   // fonction d'initialisation, lancée au chargement de la page
   init: function () {
     app.addListenerToActions();
+
+    app.getListsFromAPI();
     
     console.log('app.init !');
   },
@@ -140,7 +143,7 @@ const app = {
   },
 
   // Pour créer une liste dans le DOM on aura forcément besoin de son titre
-  makeListInDOM(listName) {
+  makeListInDOM(listObject) {
     // On récupère notre template de liste
     const listTemplateElmt = document.getElementById('list-template');
     
@@ -149,11 +152,10 @@ const app = {
 
     // On modifie le titre pour le remplacer par le vrai nom de la liste qu'on est en train de créer
     const listTitleElmt = newListElmt.querySelector('h2');
-    listTitleElmt.textContent = listName;
+    listTitleElmt.textContent = listObject.name;
 
     // On va également générer un ID unique à partir de la date à laquelle on crée l'élément
-    const newId = `list-${Date.now()}`;
-    newListElmt.querySelector('[data-list-id]').dataset.listId = newId;
+    newListElmt.querySelector('[data-list-id]').dataset.listId = listObject.id;
 
     // On en profite également au passage pour ajouter l'écouteur d'événement qui affiche la modale de création de carte
     // sur le bouton
@@ -167,7 +169,7 @@ const app = {
     // listContainer.prepend(newListElmt);
   },
 
-  makeCardInDOM(cardDescription, targetListId) {
+  makeCardInDOM(cardObject) {
     // On récupère notre template de card
     const cardTemplateElmt = document.getElementById('card-template');
     
@@ -176,14 +178,43 @@ const app = {
 
     // On modifie le titre pour le remplacer par le vrai nom de la liste qu'on est en train de créer
     const cardDescriptionDivElmt = newCardElmt.querySelector('.card-description');
-    cardDescriptionDivElmt.textContent = cardDescription;
+    cardDescriptionDivElmt.textContent = cardObject.content;
+
+    // On modifie également le dataset de l'id de la carte
+    newCardElmt.querySelector('[data-card-id]').dataset.cardId = cardObject.id;
 
     // On insère maintenant la carte dans le container de la bonne liste
-    const targetListElmt = document.querySelector(`[data-list-id=${targetListId}]`);
+    const targetListElmt = document.querySelector(`[data-list-id="${cardObject.list_id}"]`);
     targetListElmt.querySelector('.panel-block').appendChild(newCardElmt);
+  },
+
+  async getListsFromAPI() {
+
+    try {
+      const response = await fetch(`${app.base_url}/lists`);
+
+      if(!response.ok) {
+        throw new Error(response.status);
+      }
+
+      const listsArray = await response.json();
+
+      for(const listObject of listsArray) {
+        // Pour chaque liste de mon tableau, j'appelle la fonction makeListInDOM
+        app.makeListInDOM(listObject);
+
+        // On boucle également pour chaque liste sur les card pour les générer
+        for(const cardObject of listObject.cards) {
+          app.makeCardInDOM(cardObject);
+        }
+      }
+      
+    } catch (error) {
+      alert(`Impossible de récupérer les listes depuis l'API. Statut: ${error}`);
+    }
   }
 };
 
 
 // on accroche un écouteur d'évènement sur le document : quand le chargement est terminé, on lance app.init
-document.addEventListener('DOMContentLoaded', app.init );
+document.addEventListener('DOMContentLoaded', app.init);
