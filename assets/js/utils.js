@@ -36,9 +36,9 @@ const utilsModule = {
     addCardFormElmt.addEventListener('submit', cardModule.handleAddCardForm);
 
     //Ecouteur d'évênement sur une liste pour montrer le champs pour changer le nom:
-    const editListButtonElmtsList= document.querySelectorAll('.edit-card--button');
-    for (const editListdButtonElmt of editListButtonElmtsList) {
-      editListdButtonElmt.addEventListener('click', listModule.showEditListModal);
+    const editListButtonElmtsList= document.querySelectorAll('.edit-list--button');
+    for (const editListButtonElmt of editListButtonElmtsList) {
+      editListButtonElmt.addEventListener('click', listModule.showEditListModal);
     }
     
     //Ecouteur d'évênement sur une liste pour gérer le PATCH:
@@ -48,8 +48,20 @@ const utilsModule = {
       field.addEventListener('submit',listModule.handleEditListForm)
     }
 
-
+    //Ecouteur d'évênement sur une card pour montrer le champs pour changer le nom:
+    const editListCardElmtsList= document.querySelectorAll('.edit-card--button');
+    for (const editCardButtonElmt of editListCardElmtsList) {
+      editCardButtonElmt.addEventListener('click', cardModule.showEditCardModal);
+    }
     
+    //Ecouteur d'évênement sur le form pour changer le contenu:
+    const editCardForm = document.querySelectorAll('.modify-card-name');
+    for (const form of editCardForm) {
+      form.addEventListener('submit', cardModule.handleEditCardForm)
+    }
+
+    //Ecouteur d'évênement sur le form pour supprimer une carte
+    const deleteCardButtons = document.querySelectorAll('.remove-card-button')
 
   },
 

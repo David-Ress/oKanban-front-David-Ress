@@ -74,11 +74,113 @@ const cardModule = {
     const cardDescriptionDivElmt = newCardElmt.querySelector('.card-description');
     cardDescriptionDivElmt.textContent = cardObject.content;
 
+    //Ecouteur d'évênement sur une card pour montrer le champs pour changer le nom:
+    const editListCardElmtsList= document.querySelectorAll('.edit-card--button');
+    for (const editCardButtonElmt of editListCardElmtsList) {
+      editCardButtonElmt.addEventListener('click', cardModule.showEditCardModal);
+    };
+
+    const editCardForm = document.querySelectorAll('.modify-card-name');
+    for (const form of editCardForm) {
+      form.addEventListener('submit', cardModule.handleEditCardForm)
+    }
+
     // On modifie également le dataset de l'id de la carte
     newCardElmt.querySelector('[data-card-id]').dataset.cardId = cardObject.id;
 
     // On insère maintenant la carte dans le container de la bonne liste
     const targetListElmt = document.querySelector(`[data-list-id="${cardObject.list_id}"]`);
     targetListElmt.querySelector('.panel-block').appendChild(newCardElmt);
+  },
+
+  showEditCardModal(event){
+    const clickedButton = event.target;
+
+    const parentCardElmt = clickedButton.closest('[data-card-id]');
+    console.log(parentCardElmt)
+
+    const showEditField = parentCardElmt.querySelector(".modify-card-name");
+
+    const title = parentCardElmt.querySelector(".card-description");
+    
+    showEditField.classList.toggle("is-hidden");
+    title.classList.toggle("is-hidden");
+  },
+
+  async handleEditCardForm(event){
+    event.preventDefault();
+
+    const formElmt = event.target;
+
+    const parentCardElmt = formElmt.closest('[data-card-id]');
+
+    
+
+    const cardId = parentCardElmt.dataset.cardId;
+
+    const formDataInstance = new FormData(formElmt);
+
+    try {
+      // On va utiliser un fetch avec cette fois la méthode PATCH
+      const response = await fetch(`${utilsModule.base_url}/cards/${cardId}`, {
+        method: 'PATCH',
+        body: formDataInstance
+      });
+
+      if(response.ok) {
+        const newTitle = formDataInstance.getAll('content');
+        const title = parentCardElmt.querySelector(".card-description");
+        title.classList.remove("is-hidden");
+        title.innerText = newTitle
+      }
+
+
+
+    } catch (error) {
+      alert(`Impossible de créer la liste depuis l'API. Statut: ${error}`);
+    }
+
+    
+    const showEditField = parentCardElmt.querySelector(".modify-card-name");
+    // const title = parentListElmt.querySelector("h2");
+    showEditField.classList.add("is-hidden");
+    // title.classList.toggle("is-hidden");
+   
+    
+
+  },
+
+  async handleDeleteCard(event){
+    event.preventDefault();
+
+    const formElmt = event.target;
+
+    const parentCardElmt = formElmt.closest('[data-card-id]');
+
+    
+
+    const cardId = parentCardElmt.dataset.cardId;
+
+    const formDataInstance = new FormData(formElmt);
+
+    try {
+      // On va utiliser un fetch avec cette fois la méthode PATCH
+      const response = await fetch(`${utilsModule.base_url}/cards/${cardId}`, {
+        method: 'DELETE',
+        body: formDataInstance
+      });
+
+      // if(response.ok) {
+      //   const newTitle = formDataInstance.getAll('content');
+      //   const title = parentCardElmt.querySelector(".card-description");
+      //   title.classList.remove("is-hidden");
+      //   title.innerText = newTitle
+      // }
+
+
+
+    } catch (error) {
+      alert(`Impossible de créer la liste depuis l'API. Statut: ${error}`);
+    }
   },
 };

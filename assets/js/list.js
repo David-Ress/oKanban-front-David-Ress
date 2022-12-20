@@ -74,7 +74,7 @@ const listModule = {
     const addCardButtonElmt = newListElmt.querySelector('.add-card--button');
     addCardButtonElmt.addEventListener('click', cardModule.showAddCardModal);
 
-    const editListButtonElmtsList= newListElmt.querySelector('.edit-card--button');
+    const editListButtonElmtsList= newListElmt.querySelector('.edit-list--button');
     editListButtonElmtsList.addEventListener('click', listModule.showEditListModal);
 
         //Ecouteur d'évênement sur une liste pour gérer le PATCH:
@@ -95,8 +95,10 @@ const listModule = {
 
   showEditListModal(event){
     const clickedButton = event.target;
+    
 
     const parentListElmt = clickedButton.closest('[data-list-id]');
+    console.log(parentListElmt)
 
     const showEditField = parentListElmt.querySelector(".modify-name");
 
