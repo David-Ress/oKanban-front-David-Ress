@@ -1,5 +1,7 @@
 const cardModule = {
   showAddCardModal(event) {
+
+    
     // On récupère la div de la modale
     const modaleDivElmt = document.getElementById('addCardModal');
 
@@ -79,4 +81,4 @@ const cardModule = {
     const targetListElmt = document.querySelector(`[data-list-id="${cardObject.list_id}"]`);
     targetListElmt.querySelector('.panel-block').appendChild(newCardElmt);
   },
-}
+};

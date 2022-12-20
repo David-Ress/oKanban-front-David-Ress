@@ -5,6 +5,7 @@ const listModule = {
 
     // On ajoute la classe is-active
     modaleDivElmt.classList.add('is-active');
+    
   },
 
   async handleAddListForm(event) {
@@ -73,10 +74,87 @@ const listModule = {
     const addCardButtonElmt = newListElmt.querySelector('.add-card--button');
     addCardButtonElmt.addEventListener('click', cardModule.showAddCardModal);
 
+    const editListButtonElmtsList= newListElmt.querySelector('.edit-card--button');
+    editListButtonElmtsList.addEventListener('click', listModule.showEditListModal);
+
+        //Ecouteur d'évênement sur une liste pour gérer le PATCH:
+
+    const showEditField = document.querySelectorAll(".modify-name");
+    for (const field of showEditField) {
+      field.addEventListener('submit',listModule.handleEditListForm)
+    }
+
+    
     // On l'insère dans le DOM dans le container qui contient les listes de taches
     const listContainer = document.querySelector('#lists-container');
     listContainer.appendChild(newListElmt);
     // On pouvait aussi choisir d'insérer la liste en premier enfant du container (pour l'avoir au début)
     // listContainer.prepend(newListElmt);
+    
   },
-}
+
+  showEditListModal(event){
+    const clickedButton = event.target;
+
+    const parentListElmt = clickedButton.closest('[data-list-id]');
+
+    const showEditField = parentListElmt.querySelector(".modify-name");
+
+    const title = parentListElmt.querySelector("h2")
+    
+    showEditField.classList.toggle("is-hidden");
+    title.classList.toggle("is-hidden");
+  },
+
+  async handleEditListForm(event){
+    event.preventDefault();
+    // - Récupérer la liste à éditer : OK
+    // - Faire un fetch avec patch, appeler l'API
+    // - si pas ok: renvoyer erreur et afficher titre sans modifier
+    // - si ok: renvoyer succès, modifier h2 et réafficher
+    // - On remasque le formulaire.
+
+    // La bonne liste à éditer:
+    const formElmt = event.target;
+
+    const parentListElmt = formElmt.closest('[data-list-id]');
+
+    
+
+    const listId = parentListElmt.dataset.listId;
+
+    console.log(listId)
+
+    const formDataInstance = new FormData(formElmt);
+
+    try {
+      // On va utiliser un fetch avec cette fois la méthode PATCH
+      const response = await fetch(`${utilsModule.base_url}/lists/${listId}`, {
+        method: 'PATCH',
+        body: formDataInstance
+      });
+
+      if(response.ok) {
+        const newTitle = formDataInstance.getAll('name');
+        const title = parentListElmt.querySelector("h2");
+        title.classList.remove("is-hidden");
+        title.innerText = newTitle
+      }
+
+
+
+    } catch (error) {
+      alert(`Impossible de créer la liste depuis l'API. Statut: ${error}`);
+    }
+
+    
+    const showEditField = parentListElmt.querySelector(".modify-name");
+    // const title = parentListElmt.querySelector("h2");
+    showEditField.classList.add("is-hidden");
+    // title.classList.toggle("is-hidden");
+   
+    
+
+  },
+
+};

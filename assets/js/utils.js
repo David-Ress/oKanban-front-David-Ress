@@ -35,6 +35,21 @@ const utilsModule = {
     // On gère le submit du form d'ajout de liste
     addCardFormElmt.addEventListener('submit', cardModule.handleAddCardForm);
 
+    //Ecouteur d'évênement sur une liste pour montrer le champs pour changer le nom:
+    const editListButtonElmtsList= document.querySelectorAll('.edit-card--button');
+    for (const editListdButtonElmt of editListButtonElmtsList) {
+      editListdButtonElmt.addEventListener('click', listModule.showEditListModal);
+    }
+    
+    //Ecouteur d'évênement sur une liste pour gérer le PATCH:
+
+    const showEditField = document.querySelectorAll(".modify-name");
+    for (const field of showEditField) {
+      field.addEventListener('submit',listModule.handleEditListForm)
+    }
+
+
+    
 
   },
 
