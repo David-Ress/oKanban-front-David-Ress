@@ -3,7 +3,7 @@
 ## Ajouter le remote du prof sur un alias correction:
 
 ```shell
-git remote add correction <adresse_ssh_du_remote_de_correction>
+git remote add correction git@github.com:O-clock-Maya/oKanban-front-nicolassallerin.git
 ```
 
 ## Mettre à jour la branche master (ou main) à partir du dépot correction
