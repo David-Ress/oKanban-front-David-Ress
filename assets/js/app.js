@@ -46,8 +46,6 @@ const app = {
     addCardFormElmt.addEventListener('submit', cardModule.handleAddCardForm);
 
     const titlesList = document.querySelectorAll('.list-title');
-
-    console.log(titlesList);
   },
 
   async getListsFromAPI() {
