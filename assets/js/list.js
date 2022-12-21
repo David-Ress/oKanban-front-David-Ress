@@ -128,6 +128,39 @@ const listModule = {
     }
   },
 
+  async handleDeleteList(event) {
+    event.preventDefault();
+
+    // on demande confirmatipon à l'utilisateur
+    if(!confirm("Etes-vous sur de vouloir supprimer cette liste ?")) {
+      // si il refuse, on arrete tout avec un return
+      return;
+    }
+
+    // On cible la carte à supprimer en remontant à partir du bouton cliqué
+    const deleteButtonElmt = event.target;
+    const listElmt = deleteButtonElmt.closest('[data-list-id]');
+
+    const listId = listElmt.dataset.listId;
+
+    try {
+      // On envoie la requete à la DB avec un fetch pour faire la suppression
+      const response = await fetch(`${utilsModule.base_url}/lists/${listId}`, {
+        method: 'DELETE'
+      });
+
+      if(response.status !== 204) {
+        throw new Error(`Impossible de supprimer cette liste. Statut: ${response.status}`);
+      };
+
+      // Si la suppression se passe bien:
+      // On supprime immédiatement la carte du DOM avec la méthode remove
+      listElmt.remove();
+    } catch (error) {
+      alert(error);
+    }
+  },
+
    // Pour créer une liste dans le DOM on aura forcément besoin de son titre
   makeListInDOM(listObject) {
     // On récupère notre template de liste
@@ -156,6 +189,9 @@ const listModule = {
     // sur le bouton
     const addCardButtonElmt = newListElmt.querySelector('.add-card--button');
     addCardButtonElmt.addEventListener('click', cardModule.showAddCardModal);
+
+    const deleteCardButtonElmt = newListElmt.querySelector('.delete-list-button');
+    deleteCardButtonElmt.addEventListener('click', listModule.handleDeleteList);
 
     // On l'insère dans le DOM dans le container qui contient les listes de taches
     const listContainer = document.querySelector('#lists-container');
