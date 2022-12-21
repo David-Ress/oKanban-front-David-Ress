@@ -182,11 +182,20 @@ const cardModule = {
     // on précharge également la couleur dans l'input color du form
     newCardElmt.querySelector('[name="color"]').value = cardObject.color;
 
-    // On modifie également le dataset de l'id de la carte
+   // On modifie également le dataset de l'id de la carte
     newCardElmt.querySelector('[data-card-id]').dataset.cardId = cardObject.id;
 
     // On insère maintenant la carte dans le container de la bonne liste
     const targetListElmt = document.querySelector(`[data-list-id="${cardObject.list_id}"]`);
     targetListElmt.querySelector('.panel-block').appendChild(newCardElmt);
+
+    const cardContainers = document.querySelectorAll('.card-container')
+
+    for (const cardContainer of cardContainers) {
+      Sortable.create(cardContainer, {
+        animation: 150
+      })
+    }
+
   },
 }

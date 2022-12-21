@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
     <link rel="stylesheet" href="./assets/css/style.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
 </head>
 
 <body>
@@ -114,6 +115,13 @@
 
                     <div class="column is-narrow">
                         <div style="margin-right: 0.75rem;" class="is-inline-block">
+                            <a href="#" class="edit-list-button">
+                                <span class="icon is-small has-text-primary">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <div style="margin-right: 0.75rem;" class="is-inline-block">
                             <a class="delete-list-button" href="#">
                                 <span class="icon is-small has-text-danger">
                                     <i class="fas fa-trash-alt"></i>
@@ -128,7 +136,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-block is-block has-background-light">
+            <div class="panel-block is-block has-background-light card-container">
             </div>
         </div>
     </template>

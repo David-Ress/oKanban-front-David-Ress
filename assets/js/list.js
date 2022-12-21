@@ -161,6 +161,8 @@ const listModule = {
     }
   },
 
+
+
    // Pour créer une liste dans le DOM on aura forcément besoin de son titre
   makeListInDOM(listObject) {
     // On récupère notre template de liste
@@ -173,8 +175,10 @@ const listModule = {
     const listTitleElmt = newListElmt.querySelector('h2');
     listTitleElmt.textContent = listObject.name;
 
+    const editButtonElement = newListElmt.querySelector('.edit-list-button');
+
     // On en profite également pour brancher l'écouteur du double clique sur le titre
-    listTitleElmt.addEventListener('dblclick', listModule.showEditTitleForm);
+    editButtonElement.addEventListener('click', listModule.showEditTitleForm);
     // Et aussi l'écouteur du submit sur le form (qui est caché par défaut à la création
     // mais sur lequel on a quand meme déjà la possibilité d'agir coté JS)
     const hiddenForm = newListElmt.querySelector('form');
@@ -198,5 +202,15 @@ const listModule = {
     listContainer.appendChild(newListElmt);
     // On pouvait aussi choisir d'insérer la liste en premier enfant du container (pour l'avoir au début)
     // listContainer.prepend(newListElmt);
+    let listPosition = listObject.position;
+
+    
+    
+    console.log(listPosition)
+
+    //Gestion drag n drop:
+    Sortable.create(listContainer, {
+      animation: 150
+    })
   },
 }
