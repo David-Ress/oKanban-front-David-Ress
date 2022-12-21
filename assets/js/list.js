@@ -65,6 +65,10 @@ const listModule = {
     const listTitleElmt = newListElmt.querySelector('h2');
     listTitleElmt.textContent = listObject.name;
 
+    listTitleElmt.addEventListener('dblclick', () => {
+      console.log('test')
+    })
+
     // On va également générer un ID unique à partir de la date à laquelle on crée l'élément
     newListElmt.querySelector('[data-list-id]').dataset.listId = listObject.id;
 
