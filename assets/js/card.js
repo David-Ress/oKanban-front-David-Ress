@@ -126,6 +126,33 @@ const cardModule = {
     }
   },
 
+  async handleDeleteCard(event) {
+    event.preventDefault();
+
+    // On cible la carte à supprimer en remontant à partir du bouton cliqué
+    const deleteButtonElmt = event.target;
+    const cardElmt = deleteButtonElmt.closest('[data-card-id]');
+
+    const cardId = cardElmt.dataset.cardId;
+
+    try {
+      // On envoie la requete à la DB avec un fetch pour faire la suppression
+      const response = await fetch(`${utilsModule.base_url}/cards/${cardId}`, {
+        method: 'DELETE'
+      });
+
+      if(response.status !== 204) {
+        throw new Error(`Impossible de supprimer cette carte. Statut: ${response.status}`);
+      }
+
+      // Si la suppression se passe bien:
+      // On supprime immédiatement la carte du DOM avec la méthode remove
+      cardElmt.remove();
+    } catch (error) {
+      alert(error);
+    }
+  },
+
   makeCardInDOM(cardObject) {
     // On récupère notre template de card
     const cardTemplateElmt = document.getElementById('card-template');
@@ -143,6 +170,10 @@ const cardModule = {
     // On ajoute l'écouteur sur le bouton d'édition
     const editButtonElmt = newCardElmt.querySelector('.edit-card-button');
     editButtonElmt.addEventListener('click', cardModule.showEditCardForm);
+
+    // On ajoute l'écouteur sur le bouton poubelle
+    const deleteButtonElmt = newCardElmt.querySelector('.delete-card-button');
+    deleteButtonElmt.addEventListener('click', cardModule.handleDeleteCard);
     
     // On ajoute l'écouteur sur le submit du form
     newCardElmt.querySelector('form').addEventListener('submit', cardModule.handleEditCardForm);
