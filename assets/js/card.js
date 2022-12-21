@@ -86,6 +86,9 @@ const cardModule = {
 
     const cardId = data.get('card-id');
 
+    // on récupère la couleur de l'input color du form
+    const newColorValue = data.get('color');
+
     // On a besoin de cibler la div qui contient la description pour la mettre à jour si le fetch se passe bien
     const parentCardElmt = editFormElmt.closest('[data-card-id]');
     const contentDivElmt = parentCardElmt.querySelector('.card-description')
@@ -103,7 +106,12 @@ const cardModule = {
 
       const newContentValue = data.get('content');
 
-      contentDivElmt.textContent = newContentValue;
+      if(newContentValue) {
+        contentDivElmt.textContent = newContentValue;
+      };
+
+      // on applique également la nouvelle couleur récupérée depuis l'input color du form
+      parentCardElmt.style.backgroundColor = `${newColorValue}50`;
 
       contentDivElmt.classList.remove('is-hidden');
 
@@ -129,14 +137,19 @@ const cardModule = {
     const cardDescriptionDivElmt = newCardElmt.querySelector('.card-description');
     cardDescriptionDivElmt.textContent = cardObject.content;
 
+    // On peut également directement appliquer la couleur qu'on récupère depuis la db
+    newCardElmt.querySelector('.box').style.backgroundColor = `${cardObject.color}50`;
+    
     // On ajoute l'écouteur sur le bouton d'édition
     const editButtonElmt = newCardElmt.querySelector('.edit-card-button');
     editButtonElmt.addEventListener('click', cardModule.showEditCardForm);
-
+    
     // On ajoute l'écouteur sur le submit du form
     newCardElmt.querySelector('form').addEventListener('submit', cardModule.handleEditCardForm);
     // On met à jour la valeur du champ caché avec l'id de la carte
     newCardElmt.querySelector('[name="card-id"]').value = cardObject.id;
+    // on précharge également la couleur dans l'input color du form
+    newCardElmt.querySelector('[name="color"]').value = cardObject.color;
 
     // On modifie également le dataset de l'id de la carte
     newCardElmt.querySelector('[data-card-id]').dataset.cardId = cardObject.id;
