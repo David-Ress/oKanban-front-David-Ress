@@ -19,6 +19,22 @@ const cardModule = {
     modaleDivElmt.classList.add('is-active');
   },
 
+  showEditCardForm(event) {
+    // On récupère le bouton cliqué depuis l'évent
+    const editButtonElmt = event.target;
+
+    // On récupère ensuite le form en remontant sur la carte parente pour redescendre sur le form
+    const parentCardElmt = editButtonElmt.closest('[data-card-id]');
+    const editFormElmt = parentCardElmt.querySelector('form');
+
+    // On cache l'ancienne description
+    const cardDescriptionDivElmt = parentCardElmt.querySelector('.card-description');
+    cardDescriptionDivElmt.classList.add('is-hidden');
+
+    // On affiche le formulaire
+    editFormElmt.classList.remove('is-hidden');
+  },
+
   async handleAddCardForm(event) {
     event.preventDefault();
 
@@ -61,6 +77,47 @@ const cardModule = {
     utilsModule.hideModals();
   },
 
+  async handleEditCardForm(event) {
+    event.preventDefault();
+
+    const editFormElmt = event.target;
+
+    const data = new FormData(editFormElmt);
+
+    const cardId = data.get('card-id');
+
+    // On a besoin de cibler la div qui contient la description pour la mettre à jour si le fetch se passe bien
+    const parentCardElmt = editFormElmt.closest('[data-card-id]');
+    const contentDivElmt = parentCardElmt.querySelector('.card-description')
+
+    try {
+      const response = await fetch(`${utilsModule.base_url}/cards/${cardId}`, {
+        method: 'PATCH',
+        body: data
+      });
+
+      // On vérifie la réponse de l'API
+      if(response.status !== 200) {
+        throw new Error(`Impossible d'éditer le nom de cette carte. Statut: ${response.status}`);
+      }
+
+      const newContentValue = data.get('content');
+
+      contentDivElmt.textContent = newContentValue;
+
+      contentDivElmt.classList.remove('is-hidden');
+
+      editFormElmt.classList.add('is-hidden');
+
+    } catch (error) {
+      alert(error);
+
+      contentDivElmt.classList.remove('is-hidden');
+
+      editFormElmt.classList.add('is-hidden');
+    }
+  },
+
   makeCardInDOM(cardObject) {
     // On récupère notre template de card
     const cardTemplateElmt = document.getElementById('card-template');
@@ -71,6 +128,15 @@ const cardModule = {
     // On modifie le titre pour le remplacer par le vrai nom de la liste qu'on est en train de créer
     const cardDescriptionDivElmt = newCardElmt.querySelector('.card-description');
     cardDescriptionDivElmt.textContent = cardObject.content;
+
+    // On ajoute l'écouteur sur le bouton d'édition
+    const editButtonElmt = newCardElmt.querySelector('.edit-card-button');
+    editButtonElmt.addEventListener('click', cardModule.showEditCardForm);
+
+    // On ajoute l'écouteur sur le submit du form
+    newCardElmt.querySelector('form').addEventListener('submit', cardModule.handleEditCardForm);
+    // On met à jour la valeur du champ caché avec l'id de la carte
+    newCardElmt.querySelector('[name="card-id"]').value = cardObject.id;
 
     // On modifie également le dataset de l'id de la carte
     newCardElmt.querySelector('[data-card-id]').dataset.cardId = cardObject.id;

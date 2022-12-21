@@ -136,8 +136,20 @@
                 <div class="card-description column">
                     Description de la card
                 </div>
+
+                <form action="" method="POST" class="is-hidden">
+                    <input type="hidden" name="card-id" value="">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input type="text" class="input is-small" name="content" value="" placeholder="Nom de la liste">
+                        </div>
+                        <div class="control">
+                            <button class="button is-small is-success">Valider</button>
+                        </div>
+                    </div>
+                </form>
                 <div class="column is-narrow">
-                    <a href="#">
+                    <a class="edit-card-button" href="#">
                         <span class="icon is-small has-text-primary">
                             <i class="fas fa-pencil-alt"></i>
                         </span>
