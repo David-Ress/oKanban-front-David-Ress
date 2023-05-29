@@ -197,20 +197,40 @@ const listModule = {
     const deleteCardButtonElmt = newListElmt.querySelector('.delete-list-button');
     deleteCardButtonElmt.addEventListener('click', listModule.handleDeleteList);
 
+    const cardsContainerElmt = newListElmt.querySelector('.cards-container');
+    Sortable.create(cardsContainerElmt);
+
     // On l'insère dans le DOM dans le container qui contient les listes de taches
     const listContainer = document.querySelector('#lists-container');
     listContainer.appendChild(newListElmt);
     // On pouvait aussi choisir d'insérer la liste en premier enfant du container (pour l'avoir au début)
     // listContainer.prepend(newListElmt);
-    let listPosition = listObject.position;
 
     
-    
-    console.log(listPosition)
-
-    //Gestion drag n drop:
-    Sortable.create(listContainer, {
-      animation: 150
-    })
   },
+
+  async updateAllListPositions(){
+    const listsElmtsArray = document.querySelectorAll('[data-list-id]');
+
+    listsElmtsArray.forEach(async (listElemt, listElemtIndex) => {
+      const data = new FormData();
+      const listId = listElemt.dataset.listId;
+      data.set('position', listElemtIndex )
+      try{
+        const response = await fetch (`${utilsModule.base_url}/lists/${listId}`, {
+          method: 'PATCH',
+          body: data
+        })
+
+        if(response.status!==200){
+          throw new Error(`Impossible d'éditer la position de la liste possédant l'id ${listId}. Statut: ${response.status}`);
+        }
+        
+      } catch(error){
+        alert(error);
+      }
+    })
+
+    
+  }
 }

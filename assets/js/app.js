@@ -3,10 +3,18 @@
 const app = {
   
   // fonction d'initialisation, lancée au chargement de la page
-  init: function () {
-    app.getListsFromAPI();
+  init: async function () {
+    await app.getListsFromAPI();
+
+    listModule.updateAllListPositions();
+
+    
 
     app.addListenerToActions();
+
+    app.activateSortableOnListsContainer();
+
+    
     
     console.log('app.init !');
   },
@@ -68,11 +76,20 @@ const app = {
           cardModule.makeCardInDOM(cardObject);
         }
       }
-      
+      cardModule.updateAllCardsPositionFromListId(2);
     } catch (error) {
       alert(`Impossible de récupérer les listes depuis l'API. Statut: ${error}`);
     }
-  }
+  },
+
+  activateSortableOnListsContainer(){
+    const listsContainerElmt = document.getElementById('lists-container');
+    Sortable.create(listsContainerElmt, {
+      onEnd: listModule.updateAllListPositions
+    });
+
+  },
+
 };
 
 

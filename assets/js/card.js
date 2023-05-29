@@ -190,12 +190,13 @@ const cardModule = {
     targetListElmt.querySelector('.panel-block').appendChild(newCardElmt);
 
     const cardContainers = document.querySelectorAll('.card-container')
+  },
 
-    for (const cardContainer of cardContainers) {
-      Sortable.create(cardContainer, {
-        animation: 150
-      })
-    }
+  updateAllCardsPositionFromListId(listId) {
+    const targetListElmt = document.querySelector(`[data-list-id="${listId}"]`);
+
+    const allCardsElmtArray = targetListElmt.querySelectorAll('[data-card-id]');
+
 
   },
 }
